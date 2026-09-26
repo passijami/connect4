@@ -21,9 +21,7 @@ Testaukset kunnossa:
 - alfa-beta tekee karsintoja
 
 
-Tällä viikolla aloitin yksikkötestejä täydentävän testauksen luomalla benchmark.py-tiedoston, jonka avulla voin testata tekoälyn suorituskykyä.  
-Sen avulla tarkastelen minimax-haun ja alfa-beta-karsinnan toimintaa eri hakusyvyyksillä.  
-Suorituskykytestauksessa seuraan erityisesti kolmea arvoa:  
+Tällä viikolla aloitin yksikkötestejä täydentävän testauksen luomalla benchmark.py-tiedoston, jonka avulla voin testata tekoälyn suorituskykyä. Sen avulla tarkastelen minimax-haun ja alfa-beta-karsinnan toimintaa eri hakusyvyyksillä. Suorituskykytestauksessa seuraan erityisesti kolmea arvoa:  
 - tutkittujen solmujen määrää (`nodes`)
 - alfa-beta-karsintojen määrää (`prunings`)
 - haun suorittamiseen kulunutta aikaa (`time`).

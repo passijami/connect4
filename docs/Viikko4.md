@@ -27,3 +27,5 @@ Tällä viikolla aloitin yksikkötestejä täydentävän testauksen luomalla ben
 - haun suorittamiseen kulunutta aikaa (`time`).
 
 Myöhemmin voidaan vertailla esim. minimax ilman alfa-betaa vs. minimax alfa-betalla.
+
+Päivitin testausdokumenttia sekä aloitin toteutusdokumentin rakentamisen.

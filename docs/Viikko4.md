@@ -28,4 +28,6 @@ Tällä viikolla aloitin yksikkötestejä täydentävän testauksen luomalla ben
 
 Myöhemmin voidaan vertailla esim. minimax ilman alfa-betaa vs. minimax alfa-betalla.
 
-Päivitin testausdokumenttia sekä aloitin toteutusdokumentin rakentamisen.
+Päivitin myös testausdokumenttia sekä aloitin toteutusdokumentin rakentamisen. Seuraavaksi lähden tutkimaan projektin heuristiikkaa.
+
+Tuntimäärällisesti käytin tällä viikolla projektiin suunnilleen 17 tuntia.

@@ -19,3 +19,11 @@ Testaukset kunnossa:
 - tekoälyn palauttaman siirron laillisuus
 - minimax ei muuta alkuperäistä lautaa
 - alfa-beta tekee karsintoja
+
+
+Tällä viikolla aloitin tekoälyn suorituskyvyn testaamisen erillisellä benchmark.py-tiedostolla. Sen avulla tarkastelen minimax-haun ja alfa-beta-karsinnan toimintaa eri hakusyvyyksillä. Suorituskykytestauksessa seuraan erityisesti kolmea arvoa:  
+- tutkittujen solmujen määrää (`nodes`)
+- alfa-beta-karsintojen määrää (`prunings`)
+- haun suorittamiseen kulunutta aikaa (`time`).
+
+Myöhemmin voidaan vertailla esim. minimax ilman alfa-betaa vs. minimax alfa-betalla.

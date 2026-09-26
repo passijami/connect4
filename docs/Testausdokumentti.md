@@ -152,24 +152,7 @@ Lisää tähän viimeisimmän `benchmark.py`-ajon tulokset:
 
 Empiirisen suorituskykytestauksen tulokset esitetään myös graafisesti.
 
-Ensisijaisessa kuvaajassa:
-
-* x-akselilla on hakusyvyys (`depth`)
-* y-akselilla on tutkittujen solmujen määrä (`nodes`).
-
-Lisää tähän `benchmark.py`-tuloksista muodostettu kuvaaja:
-
-```markdown
-![Hakusyvyyden vaikutus tutkittujen solmujen määrään](images/benchmark_nodes.png)
-```
-
-Kuvaajan avulla voidaan havainnollistaa, kuinka nopeasti minimax-haun työmäärä kasvaa hakusyvyyden kasvaessa.
-
-Myöhemmässä vaiheessa suorituskykytestausta voidaan laajentaa vertaamalla tavallista minimax-hakua ja alfa-beta-karsinnallista minimax-hakua samalla pelitilanteella ja samalla hakusyvyydellä. Tällöin voidaan vertailla erityisesti algoritmien tutkimien solmujen määrää ja osoittaa konkreettisesti alfa-beta-karsinnan vaikutus.
-
 ## Testauksen jatkokehitys
-
-Nykyiset yksikkötestit kattavat viikon 4 keskeisen toiminnallisuuden, mutta ne eivät ole projektin lopullinen testikokonaisuus.
 
 Kun heuristinen arviointifunktio toteutetaan, testejä täydennetään tilanteilla, joissa tarkistetaan esimerkiksi, että:
 

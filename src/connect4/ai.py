@@ -67,7 +67,9 @@ def minimax(
     alpha: float,
     beta: float,
     maximizing: bool,
-    move_order_hint: dict,
+    move_order_hint: dict | None = None,
+    deadline: float | None = None,
+    stats: dict[str, int] | None = None,
 ) -> tuple[float, int]:
     """Minimax alfa-beta-karsinnalla, yksi kiinteä syvyys.
 

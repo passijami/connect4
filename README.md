@@ -8,4 +8,5 @@ Tämä on Helsingin yliopiston Tietojenkäsittelytieteen kandiohjelman Algoritmi
 ## Viikkoraportit  
 [Viikko 1](docs/Viikko1.md)  
 [Viikko 2](docs/Viikko2.md)  
-[Viikko 3](docs/Viikko3.md)
+[Viikko 3](docs/Viikko3.md)  
+[Viikko 4](docs/Viikko4.md)

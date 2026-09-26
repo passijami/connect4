@@ -1,6 +1,6 @@
 # Toteutusdokumentti
 
-Tässä kuvaan, miten Connect4-tekoälyni toimii tällä hetkellä ja mihin ratkaisuihin olen matkan varrella päätynyt.
+Tässä kuvaan, miten Connect4-tekoälyni toimii tällä hetkellä ja mihin ratkaisuihin olen päätynyt.
 
 ## Ohjelman yleisrakenne
 

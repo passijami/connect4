@@ -7,8 +7,9 @@ Viime viikolla jäin hieman jälkeen aikataulusta, joten tällä viikolla oli ta
 - tekoäly valitsee siirron
 - peliä voi oikeasti pelata AI:ta vastaan.
 
+
 Testaukset kunnossa:  
-- vaaka-, pysty- ja molemmat diagonaalivoitot
+- kaikkien suuntien voitot (pysty, vaaka ja risteävät)
 - reunassa oleva neljän suora
 - täysi sarake
 - väärä sarakeindeksi

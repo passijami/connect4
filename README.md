@@ -4,7 +4,7 @@ Tämä on Helsingin yliopiston Tietojenkäsittelytieteen kandiohjelman Algoritmi
 ## Dokumentaatio
 [Määrittelydokumentti](docs/Määrittelydokumentti.md)  
 [Testausdokumentti](docs/Testausdokumentti.md)  
-[Toteutusdokumentti](Toteutusdokumentti.md)
+[Toteutusdokumentti](docs/Toteutusdokumentti.md)
 
 ## Viikkoraportit  
 [Viikko 1](docs/Viikko1.md)  

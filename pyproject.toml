@@ -8,6 +8,9 @@ packages = [{include = "connect4", from = "src"}]
  
 [tool.poetry.dependencies]
 python = "^3.11"
+
+[tool.poetry.scripts]
+connect4 = "connect4.cli:main"
  
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.0"

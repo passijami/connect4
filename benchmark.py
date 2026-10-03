@@ -53,8 +53,8 @@ def run_plain_minimax(depth: int) -> tuple[float, int, dict[str, int], float]:
 
 
 def main() -> None:
-    """Mitataan sama pelitilanne hakusyvyyksillä 1-7."""
-    print("depth,best_move,value,nodes,cutoffs,milliseconds")
+    """Vertaa algoritmeja samalla pelitilanteella hakusyvyyksillä 1-7."""
+    print("algorithm,depth,best_move,value,nodes,cutoffs,milliseconds")
 
     for depth in range(1, 8):
         for name, runner in (
@@ -62,10 +62,11 @@ def main() -> None:
             ("alpha_beta", run_alpha_beta),
         ):
             value, best_move, stats, elapsed_ms = runner(depth)
-        print(
-            f"{depth},{best_move},{value},"
-            f"{stats.get('nodes', 0)},{stats.get('cutoffs', 0)},{elapsed_ms:.3f}"
-        )
+            print(
+                f"{name},{depth},{best_move},{value},"
+                f"{stats.get('nodes', 0)},{stats.get('cutoffs', 0)},"
+                f"{elapsed_ms:.3f}"
+            )
 
 
 if __name__ == "__main__":

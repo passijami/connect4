@@ -32,7 +32,7 @@ def coverage_html(c):
 @task
 def lint(c):
     """Aja pylint koodin laadun tarkistukseen."""
-    c.run("pylint src", pty=True
+    c.run("pylint src", pty=True)
 
 
 @task

@@ -57,6 +57,7 @@ def main() -> None:
             print(f"{winner} voitti!")
             break
         if board.is_full():
+            print_board(board)
             print("Tasapeli!")
             break
 

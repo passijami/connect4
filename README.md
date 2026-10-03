@@ -11,3 +11,4 @@ Tämä on Helsingin yliopiston Tietojenkäsittelytieteen kandiohjelman Algoritmi
 [Viikko 2](docs/Viikko2.md)  
 [Viikko 3](docs/Viikko3.md)  
 [Viikko 4](docs/Viikko4.md)
+[Viikko 5](docs/Viikko5.md)

@@ -88,3 +88,24 @@ def test_invalid_column_raises_value_error():
         board.play(-1)
     with pytest.raises(ValueError):
         board.play(COLS)
+
+def test_position_key_is_restored_by_undo():
+    board = Board()
+    play_moves(board, [3, 2, 4])
+
+    key_before = board.position_key()
+
+    board.play(5)
+    board.undo(5)
+
+    assert board.position_key() == key_before
+
+def test_is_full_after_42_moves():
+    board = Board()
+
+    for column in range(COLS):
+        for _ in range(6):
+            board.play(column)
+
+    assert board.is_full()
+    assert board.legal_moves() == []

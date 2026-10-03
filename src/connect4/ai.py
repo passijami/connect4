@@ -3,10 +3,24 @@
 
 import math
 import time
-from connect4.board import Board, COLS
+from connect4.board import (
+    Board,
+    COLS,
+    EMPTY,
+    PLAYER_ONE,
+    PLAYER_TWO,
+    ROWS,
+)
 
 WIN_SCORE = 1000000
 CENTER_FIRST = tuple(sorted(range(COLS), key=lambda column: abs(column - COLS // 2)))
+
+# Heuristiikan painot
+CENTER_WEIGHT = 5
+THREE_WEIGHT = 100
+TWO_WEIGHT = 10
+OPPONENT_THREE_WEIGHT = 120
+OPPONENT_TWO_WEIGHT = 10
 
 class SearchTimeout(Exception):
     """Sisäinen poikkeus, aikarajan täyttynyt haku keskeytetään.  
@@ -19,9 +33,8 @@ def choose_move(board: Board, time_limit_seconds: float) -> int:
     viimeisen kokonaan valmistuneen hakusyvyyden tulos. Jos aikaraja täyttyy
     kesken syvemmän kierroksen, keskeneräinen tulos hylätään.
 
-    Tällä viikolla syvyysrajan saavuttanut ei-terminaalinen pelitilanne saa
-    arvon 0. Varsinainen heuristinen arviointifunktio lisätään seuraavalla
-    viikolla.
+    move_order_hint elää vain yhden vuoron ajan. Siihen tallennetaan
+    pelitilanteelle aiemmin parhaaksi arvioitu siirto, ei minimax-arvoa.
     """
 
     legal_moves = board.legal_moves()
@@ -122,7 +135,7 @@ def minimax(
                         beta,
                         False,
                         move_order_hint,
-                                deadline=deadline,
+                        deadline=deadline,
                         stats=stats,
                     )
             finally:
@@ -158,7 +171,7 @@ def minimax(
                         beta,
                         True,
                         move_order_hint,
-                                deadline=deadline,
+                        deadline=deadline,
                         stats=stats,
                     )
             finally:
@@ -177,17 +190,143 @@ def minimax(
     move_order_hint[position_key] = best_move
     return best_value, best_move
 
-def evaluate(board: Board) -> float:
-    """Heuristinen arvio kesken jääneen pelitilanteen hyvyydestä.
+def minimax_without_pruning(
+    board: Board,
+    depth: int,
+    maximizing: bool,
+    stats: dict[str, int] | None = None,
+) -> tuple[float, int]:
+    """Karsimaton minimax vertailukohdaksi testeihin ja benchmarkiin.
 
-    TODO: suunnittele oma funktio  
-    Esimerkki lähtökohdaksi: laske kummankin pelaajan
-    mahdolliset neljän suorat "ikkunat" ja
-    pisteytä niiden täyttöasteen mukaan. Toteutetaan heuristiikka  
-    myöhemmin.
+    Tätä versiota ei käytetä pelin käyttöliittymässä. Käytän tätä vertailukohtana alfa-beta-karsinnan oikeellisuudelle.
+    Tarkoitus näyttää, kuinka paljon karsinta vähentää tutkittujen solmujen määrää.
     """
-    _ = board
-    return 0.0
+    if stats is not None:
+        stats["nodes"] = stats.get("nodes", 0) + 1
+
+    if depth == 0 or board.is_full():
+        return evaluate(board), -1
+
+    moves = _ordered_moves(board, {})
+    if not moves:
+        return 0.0, -1
+
+    if maximizing:
+        best_value = -math.inf
+        best_move = moves[0]
+
+        for column in moves:
+            board.play(column)
+            try:
+                if board.check_win():
+                    value = WIN_SCORE + depth
+                elif board.is_full():
+                    value = 0.0
+                else:
+                    value, _ = minimax_without_pruning(
+                        board, depth - 1, False, stats
+                    )
+            finally:
+                board.undo(column)
+
+            if value > best_value:
+                best_value = value
+                best_move = column
+
+        return best_value, best_move
+
+    best_value = math.inf
+    best_move = moves[0]
+
+    for column in moves:
+        board.play(column)
+        try:
+            if board.check_win():
+                value = -(WIN_SCORE + depth)
+            elif board.is_full():
+                value = 0.0
+            else:
+                value, _ = minimax_without_pruning(
+                    board, depth - 1, True, stats
+                )
+        finally:
+            board.undo(column)
+
+        if value < best_value:
+            best_value = value
+            best_move = column
+
+    return best_value, best_move
+
+def evaluate(board: Board) -> float:
+    """Arvioi keskeneräisen pelitilanteen pelaajan 2 näkökulmasta.
+
+    Arvioinnissa huomioidaan keskisarakkeen hallinta sekä kaikki neljän ruudun
+    ikkunat vaaka-, pysty- ja diagonaalisuunnissa. Kolmen oman merkin ja yhden
+    tyhjän ruudun muodostelma saa suuren positiivisen arvon. Vastustajan
+    vastaava uhka saa hieman suuremman negatiivisen arvon, jotta tekoäly
+    reagoisi herkästi.
+    """
+    score = 0
+
+    center_column = COLS // 2
+    center_values = [board.grid[row][center_column] for row in range(ROWS)]
+    score += center_values.count(PLAYER_TWO) * CENTER_WEIGHT
+    score -= center_values.count(PLAYER_ONE) * CENTER_WEIGHT
+
+    for row in range(ROWS):
+        for column in range(COLS - 3):
+            window = board.grid[row][column : column + 4]
+            score += _score_window(window)
+
+    for column in range(COLS):
+        for row in range(ROWS - 3):
+            window = [board.grid[row + offset][column] for offset in range(4)]
+            score += _score_window(window)
+
+    for row in range(ROWS - 3):
+        for column in range(COLS - 3):
+            window = [
+                board.grid[row + offset][column + offset]
+                for offset in range(4)
+            ]
+            score += _score_window(window)
+
+    for row in range(3, ROWS):
+        for column in range(COLS - 3):
+            window = [
+                board.grid[row - offset][column + offset]
+                for offset in range(4)
+            ]
+            score += _score_window(window)
+
+    return float(score)
+
+
+def _score_window(window: list[int]) -> int:
+    """Pisteyttää yhden neljän ruudun ikkunan."""
+    ai_count = window.count(PLAYER_TWO)
+    opponent_count = window.count(PLAYER_ONE)
+    empty_count = window.count(EMPTY)
+
+    if ai_count == 4:
+        return WIN_SCORE
+    if opponent_count == 4:
+        return -WIN_SCORE
+
+    score = 0
+
+    if ai_count == 3 and empty_count == 1:
+        score += THREE_WEIGHT
+    elif ai_count == 2 and empty_count == 2:
+        score += TWO_WEIGHT
+
+    if opponent_count == 3 and empty_count == 1:
+        score -= OPPONENT_THREE_WEIGHT
+    elif opponent_count == 2 and empty_count == 2:
+        score -= OPPONENT_TWO_WEIGHT
+
+    return score
 
 def _ordered_moves(board: Board, move_order_hint: dict) -> list[int]:
     """Palauttaa lailliset siirrot keskeltä reunoille, aiempi vihje ensin."""

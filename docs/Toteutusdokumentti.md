@@ -16,7 +16,23 @@ Pelilauta on 6x7 Python-lista, jossa 0 on tyhjä ruutu, 1 pelaaja 1 ja 2 pelaaja
 
 Minimax rakentaa pelipuuta mahdollisista tulevista siirroista. Omalla vuorolla tekoäly valitsee suurimman arvon ja vastustajan vuorolla pienimmän. Ajatuksena on, että kumpikin pelaaja tekee omalta kannaltaan parhaan mahdollisen siirron.
 
-Voittava siirto saa suuren positiivisen arvon, häviävä suuren negatiivisen ja tasapeli arvon 0. Tällä viikolla myös syvyysrajalle päättynyt, vielä kesken oleva peli, saa arvon 0. Tämä on tietoinen yksinkertaistus. Varsinainen heuristinen arviointi tulee mukaan ensi viikolla.
+Voittava siirto saa suuren positiivisen arvon ja häviävä suuren negatiivisen arvon. Pisteeseen lisätään jäljellä oleva hakusyvyys, jolloin tekoäly suosii nopeampaa voittoa ja pyrkii lykkäämään väistämätöntä häviötä mahdollisimman pitkälle.
+
+Syvyysrajan saavuttanut keskeneräinen pelitilanne arvioidaan heuristisella `evaluate()`-funktiolla.
+
+## Heuristinen arviointi
+
+Viikolla 5 lisäsin varsinaisen heuristisen arvioinnin. Arviointi tehdään tekoälyn eli pelaajan 2 näkökulmasta.
+
+Heuristiikka huomio:  
+- keskisarakkeen hallinnan
+- kaikki neljän ruudun ikkunat
+
+Keskisarakkeessa olevista tekoälyn merkeistä saa lisäpisteitä, koska keskellä oleva merkki kuuluu todennäköisemmin useampaan mahdolliseen neljän suoraan kuin reunassa oleva merkki.
+
+Haluan saada tekoälyn reagoimaan välittömiin uhkiin riittävän voimakkaasti. Siitä johtuen neljän ruudun ikkunoissa pisteytän erityisesti kahden ja kolmen oman merkin muodostelmia. Sen lisäksi vastustajan kolmen merkin ja yhden tyhjän ruudun uhka saa hieman suuremman negatiivisen painon kuin oma vastaava muodostelma positiivisen painon.
+
+Heuristiikan ei ole tarkoitus ratkaista pelitilannetta täydellisesti. Sen tehtävä on järjestää syvyysrajalle jäävät tilanteet riittävän järkevään paremmuusjärjestykseen.
 
 ## Alfa-beta-karsinta
 
@@ -27,7 +43,9 @@ Minimax pitää yllä kahta rajaa:
 
 Kun `alpha >= beta`, loput saman solmun haarat voi jättää tutkimatta, koska ne eivät voi enää muuttaa ylemmän tason päätöstä. Karsinta ei vaikuta minimaxin lopputulokseen mitenkään. Se vain vähentää tutkittavien pelitilojen määrää.
 
-Siirrot käydään läpi keskisarakkeesta reunoja kohti, koska Connect4:ssa keskisarakkeet osallistuvat useampaan mahdolliseen neljän suoraan kuin reunat. Tämä järjestys löytää lupaavia siirtoja usein aikaisin, mikä tehostaa karsintaa huomattavasti. Iteratiivisen syvenemisen ansiosta myös edellisen valmiin hakukierroksen parasta siirtoa voi kokeilla seuraavalla kierroksella ensimmäisenä.
+Karsinnan pitäisi muuttaa vain tutkittujen solmujen määrää, ei minimaxin lopullista arvoa. Tämän vuoksi projektissa on nyt myös erillinen `minimax_without_pruning()`-vertailutoteutus. Sitä ei käytetä varsinaisessa pelissä, vaan testeissä ja benchmarkissa alfa-beta-haun oikeellisuuden ja tehokkuuden tarkistamiseen.
+
+Siirrot käydään oletuksena läpi keskisarakkeesta reunoja kohti. Connect4:ssa keskisarakkeet osallistuvat useampaan mahdolliseen neljän suoraan, joten tämä järjestys löytää usein hyviä siirtoja aikaisemmin ja parantaa alfa-beta-karsinnan tehokkuutta. Pelitilalle tallennetaan vain paras siirto, ei sen minimax-arvoa. Aiempi siirto kokeillaan seuraavalla kierroksella ensin.
 
 ## Iteratiivinen syveneminen
 
@@ -38,6 +56,11 @@ Siirrot käydään läpi keskisarakkeesta reunoja kohti, koska Connect4:ssa kesk
 Ilman karsintaa minimaxin aikavaativuus on `O(b^d)`, missä `b` on haarautumiskerroin (Connect4:ssa enintään 7) ja `d` hakusyvyys. Alfa-beta-karsinnan pahin tapaus on periaatteessa yhä `O(b^d)`, mutta hyvällä siirtojärjestyksellä päästään käytännössä lähelle `O(b^(d/2))`.
 
 Hakurekursio käyttää vain `O(d)` lisätilaa, koska lautaa ei kopioida jokaiseen puun solmuun. Siirtojärjestyksen vihjesanakirja vie hieman muistia niiltä pelitiloilta jotka siihen tallennetaan, mutta se sisältää vain parhaan siirron, ei valmiita minimax-arvoja, jotka veisivät huomattavasti enemmän tilaa ja joita ei muutenkaan voisi luotettavasti käyttää uudestaan.
+
+Heuristisen arvioinnin työmäärä on vakio suhteessa hakusyvyyteen, koska Connect4-laudan koko on aina 6x7. Käytännössä `evaluate()` käy läpi kaikki neljän ruudun ikkunat kiinteän kokoisella laudalla.
+
+## Suorituskykyvertailu
+
 
 ## Nykyiset puutteet ja seuraavat parannukset
 

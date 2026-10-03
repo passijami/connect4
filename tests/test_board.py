@@ -16,6 +16,10 @@ def test_empty_board_has_all_legal_moves():
     board = Board()
     assert board.legal_moves() == list(range(COLS))
 
+def test_empty_board_has_no_winner():
+    board = Board()
+    assert not board.check_win()
+
 def test_full_column_is_not_legal():
     board = Board()
     for _ in range(6):
@@ -66,6 +70,12 @@ def test_undo_rejects_wrong_column():
 
     with pytest.raises(ValueError):
         board.undo(2)
+
+def test_undo_rejects_empty_history():
+    board = Board()
+
+    with pytest.raises(ValueError):
+        board.undo(0)
 
 def test_edge_horizontal_win():
     board = Board()

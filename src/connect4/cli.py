@@ -33,7 +33,7 @@ def _read_human_move(board: Board) -> int:
 
 def main() -> None:
     """Pelisilmukka vuorottelee ihmisen ja tekoälyn siirtoja.  
-    Ihminen on X, tekoäly 0."""
+    Ihminen on X, tekoäly O."""
     board = Board()
     print("Connect4: sinä olet X, tekoäly on O.")
     print("Ensimmäisenä neljä omaa merkkiä riviin saanut voittaa.\n")

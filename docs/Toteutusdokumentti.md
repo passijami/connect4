@@ -80,7 +80,7 @@ tutki 18233 solmua. Myös suoritusaika pieneni samalla mittauksella noin
 ## Nykyiset puutteet ja seuraavat parannukset
 
 Tekoälyn ydintoiminta on nyt valmis kurssin vaatimusten kannalta, mutta toteutusta voisi vielä kehittää.
-Nykyiset tärkeimmät rajoitteet ovat:
+Nykyiset rajoitteet tällä hetkellä:
 - heuristiikan painot ovat itse valittuja eikä niitä ole vielä systemaattisesti viritetty
 - tekoäly on käyttöliittymässä aina pelaaja 2
 - käytössä ei ole varsinaista transpositiotaulua, joka tallentaisi tarkkoja arvoja sekä ylä- ja alarajoja

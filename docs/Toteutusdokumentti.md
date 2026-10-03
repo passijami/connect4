@@ -60,14 +60,34 @@ Hakurekursio käyttää vain `O(d)` lisätilaa, koska lautaa ei kopioida jokaise
 Heuristisen arvioinnin työmäärä on vakio suhteessa hakusyvyyteen, koska Connect4-laudan koko on aina 6x7. Käytännössä `evaluate()` käy läpi kaikki neljän ruudun ikkunat kiinteän kokoisella laudalla.
 
 ## Suorituskykyvertailu
+Projektin `benchmark.py` vertaa karsimatonta minimaxia ja alfa-beta-hakua täsmälleen samassa pelitilanteessa ja samoilla hakusyvyyksillä:
 
+| Syvyys | Paras siirto | Arvo | Minimax, solmut | Alfa-beta, solmut | Karsinnat | Minimax aika (ms) | Alfa-beta aika (ms) |
+| ------: | -----------: | ---: | ---------------: | -----------------: | --------: | ----------------: | -------------------: |
+| 1 | 5 | -30.0 | 8 | 8 | 0 | 0.143 | 0.133 |
+| 2 | 5 | -30.0 | 57 | 37 | 4 | 0.871 | 0.499 |
+| 3 | 0 | -30.0 | 392 | 213 | 20 | 5.569 | 3.027 |
+| 4 | 4 | -60.0 | 2685 | 612 | 110 | 38.825 | 7.887 |
+| 5 | 5 | -30.0 | 17755 | 2790 | 475 | 258.914 | 37.535 |
+| 6 | 3 | -30.0 | 118645 | 3176 | 1113 | 1735.136 | 34.671 |
+| 7 | 0 | -20.0 | 755103 | 18233 | 4386 | 11127.267 | 232.643 |
+
+Ero tutkittujen solmujen määrässä kasvaa selvästi hakusyvyyden mukana.
+Syvyydellä 7 tavallinen minimax tutki 755103 solmua, kun alfa-beta-haku
+tutki 18233 solmua. Myös suoritusaika pieneni samalla mittauksella noin
+11,1 sekunnista 0,23 sekuntiin.
 
 ## Nykyiset puutteet ja seuraavat parannukset
 
-Tämän viikon selkein ja tarkoituksellinen puute on heuristinen arviointifunktio. Koska syvyysrajalla palautetaan tällä hetkellä aina 0, tekoäly osaa erottaa toisistaan vain ne vaihtoehdot, joissa voitto tai tappio näkyy jo hakusyvyyden sisällä. Seuraavaksi on tarkoitus lisätä heuristiikka, joka arvioi esimerkiksi avoimia neljän ruudun ikkunoita, kolmen ja kahden merkin uhkia sekä keskisarakkeen hallintaa.
+Tekoälyn ydintoiminta on nyt valmis kurssin vaatimusten kannalta, mutta toteutusta voisi vielä kehittää.
+Nykyiset tärkeimmät rajoitteet ovat:
+- heuristiikan painot ovat itse valittuja eikä niitä ole vielä systemaattisesti viritetty
+- tekoäly on käyttöliittymässä aina pelaaja 2
+- käytössä ei ole varsinaista transpositiotaulua, joka tallentaisi tarkkoja arvoja sekä ylä- ja alarajoja
+- lauta on tavallinen Python-lista eikä bittilauta.
 
-Transpositiotaulun hyötyä voisi mitata myöhemmin, mutta en ole vielä lisännyt sitä. Halusin pitää viikon 4 ydinalgoritmin vielä yksinkertaisena, jotta sen pystyy vielä helposti tarkistamaan rivi riviltä.
+Jos aikaa jää, seuraava järkevä kehityskohde olisi mitata eri siirtojärjestysten ja heuristiikan painojen vaikutusta samoilla testiasemilla. Bittilautaan siirtymistä en pidä tällä hetkellä tarpeellisena, koska nykyinen rakenne on selkeä ja suorituskyvyn mahdolliset pullonkaulat voidaan ensin osoittaa mittauksilla.
 
 ## Laajojen kielimallien käyttö
 
-Viikolla 4 käytin Claudea testitapausten ideoinnissa ja dokumentaation muotoilussa.
+Viikolla 5 käytin Claudea testitapausten ideoinnissa ja dokumentaation muotoilussa.

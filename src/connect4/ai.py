@@ -86,6 +86,10 @@ def minimax(
 ) -> tuple[float, int]:
     """Minimax alfa-beta-karsinnalla, yksi kiinteä syvyys.
 
+    Tekoäly (pelaaja 2) on maksimoiva pelaaja. Pelaaja 1 minimoi arvon.
+    Edellisen iteratiivisen syvenemiskierroksen tietoa käytetään vain
+    siirtojärjestykseen, ei valmiiden pelitila-arvojen palauttamiseen.
+
     Args:
         board: nykyinen pelitilanne, play/undo
         depth: jäljellä oleva hakusyvyys
@@ -94,6 +98,8 @@ def minimax(
         maximizing: onko vuorossa pelaaja jota maksimoidaan
         move_order_hint: edellisen iteraation hajautustaulu siirtojen
             järjestämiseen.
+        deadline: Absoluuttinen monotonic-kellon aikaraja. None poistaa aikarajan.
+        stats: Valinnainen sanakirja tutkittujen solmujen ja karsintojen laskentaan.
 
     Returns:
         (arvo, paras_sarake).

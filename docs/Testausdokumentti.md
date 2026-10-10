@@ -171,7 +171,8 @@ Ero algoritmien tekemän työn määrässä kasvaa selvästi hakusyvyyden kasvae
 
 ### Suorituskykytestauksen kuvaaja
 
-Empiirisen suorituskykytestauksen tulokset esitetään myös graafisesti.
+Empiirisen suorituskykytestauksen tulokset voidaan esittää myös graafisesti:
+![Minimaxin ja alfa-beta-haun suorituskyky](docs/images/benchmark_nodes.png)
 
 ## Testauksen jatkokehitys
 

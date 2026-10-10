@@ -4,6 +4,6 @@ Tällä viikolla hioin projektin viimeistelyä vertaisarvioinnin avulla. Varsina
 
 Testejä täydensin kahdella tapauksella. Nyt voidaan tarkistaa myös, että täydellä laudalla tekoäly ilmoittaa ettei laillisia siirtoja ole ja että minimax keskeytyy oikein jo umpeutuneella aikarajalla. Testejä on yhteensä 27, ja kaikki menevät läpi. Ydinkoodin haarautumakattavuus on n. 93 %.
 
-Lisäsin myös erillisen käyttöohjeen, jossa kerrotaan asennus, ohjelman käynnistäminen, hyväksytyt syötteet, testien ajaminen ja benchmarkin suorittaminen. 
+Lisäsin myös erillisen käyttöohjeen, jossa kerrotaan asennus, ohjelman käynnistäminen, hyväksytyt syötteet, testien ajaminen ja benchmarkin suorittaminen. Testausdokumentista löytyy nyt myös suorituskykytestauksen kuvaaja.
 
 Tuntimäärällisesti käytin tällä viikolla projektiin noin 6 tuntia.

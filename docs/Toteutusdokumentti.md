@@ -22,7 +22,7 @@ Syvyysrajan saavuttanut keskeneräinen pelitilanne arvioidaan heuristisella `eva
 
 ## Heuristinen arviointi
 
-Viikolla 5 lisäsin varsinaisen heuristisen arvioinnin. Arviointi tehdään tekoälyn eli pelaajan 2 näkökulmasta.
+Arviointi tehdään tekoälyn eli pelaajan 2 näkökulmasta.
 
 Heuristiikka huomio:  
 - keskisarakkeen hallinnan
@@ -90,4 +90,4 @@ Jos aikaa jää, seuraava järkevä kehityskohde olisi mitata eri siirtojärjest
 
 ## Laajojen kielimallien käyttö
 
-Viikolla 5 käytin Claudea testitapausten ideoinnissa ja dokumentaation muotoilussa.
+Viikolla 6 käytin Claudea testitapausten ideoinnissa ja dokumentaation muotoilussa.

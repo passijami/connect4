@@ -172,7 +172,13 @@ Ero algoritmien tekemän työn määrässä kasvaa selvästi hakusyvyyden kasvae
 ### Suorituskykytestauksen kuvaaja
 
 Empiirisen suorituskykytestauksen tulokset voidaan esittää myös graafisesti:    
-![Minimaxin ja alfa-beta-haun suorituskyky](benchmark_nodes.png)
+![Minimaxin ja alfa-beta-haun suorituskyky](benchmark_nodes.png)  
+Kuvaajassa verrataan karsimattoman minimaxin ja alfa-beta-karsinnalla tehostetun minimaxin tutkimien pelipuun solmujen määrää eri hakusyvyyksillä.
+
+Molempien algoritmien tutkimien solmujen määrä kasvaa hakusyvyyden kasvaessa, mutta alfa-beta-karsinnan kasvu on selvästi hitaampaa. Ero korostuu erityisesti suuremmilla hakusyvyyksillä. Esimerkiksi syvyydellä 7 karsimaton minimax tutki 755 103 solmua, kun alfa-beta-haku tutki 18 233 solmua.
+
+Molemmat algoritmit palauttivat jokaisella testatulla hakusyvyydellä saman pelitilanteen arvon ja saman parhaan siirron. Mittaus osoittaa siis, että alfa-beta-karsinta vähentää merkittävästi tutkittavan pelipuun kokoa muuttamatta minimaxin lopputulosta.
+
 
 ## Testauksen jatkokehitys
 

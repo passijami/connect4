@@ -90,4 +90,4 @@ Jos aikaa jää, seuraava järkevä kehityskohde olisi mitata eri siirtojärjest
 
 ## Laajojen kielimallien käyttö
 
-Viikolla 6 käytin Claudea testitapausten ideoinnissa ja dokumentaation muotoilussa.
+Viikolla 6 käytin Claudea dokumentaation muotoilussa.

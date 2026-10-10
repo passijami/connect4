@@ -57,17 +57,59 @@ def main() -> None:
     """Vertaa algoritmeja samalla pelitilanteella hakusyvyyksillä 1-7."""
     print("algorithm,depth,best_move,value,nodes,cutoffs,milliseconds")
 
+    depths = []
+    minimax_nodes = []
+    alpha_beta_nodes = []
+
     for depth in range(1, 8):
+        depths.append(depth)
+
         for name, runner in (
             ("minimax", run_plain_minimax),
             ("alpha_beta", run_alpha_beta),
         ):
             value, best_move, stats, elapsed_ms = runner(depth)
+
+            nodes = stats.get("nodes", 0)
+            cutoffs = stats.get("cutoffs", 0)
+
             print(
                 f"{name},{depth},{best_move},{value},"
-                f"{stats.get('nodes', 0)},{stats.get('cutoffs', 0)},"
-                f"{elapsed_ms:.3f}"
+                f"{nodes},{cutoffs},{elapsed_ms:.3f}"
             )
+
+            if name == "minimax":
+                minimax_nodes.append(nodes)
+            else:
+                alpha_beta_nodes.append(nodes)
+
+    plt.figure(figsize=(8, 5))
+
+    plt.plot(
+        depths,
+        minimax_nodes,
+        marker="o",
+        label="Karsimaton minimax",
+    )
+
+    plt.plot(
+        depths,
+        alpha_beta_nodes,
+        marker="o",
+        label="Alfa-beta",
+    )
+
+    plt.xlabel("Hakusyvyys")
+    plt.ylabel("Tutkitut solmut")
+    plt.title("Minimaxin ja alfa-beta-haun suorituskyky")
+
+    plt.yscale("log")
+    plt.legend()
+    plt.grid(True)
+
+    plt.tight_layout()
+    plt.savefig("docs/images/benchmark_nodes.png")
+    plt.close()
 
 
 if __name__ == "__main__":

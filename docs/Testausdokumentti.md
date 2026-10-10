@@ -18,13 +18,13 @@ Lisää tähän viimeisimmän kattavuusajon tulokset:
 | `tests/test_board.py`   |      100 % |
 | Yhteensä                |      95 % |
 
-Nykyisessä viikon 5 versiossa yksikkötestejä on yhteensä 25. Testeillä tarkistetaan sekä pelilaudan toimintaa että tekoälyn hakualgoritmin keskeisiä ominaisuuksia.
+Nykyisessä viikon 5 versiossa yksikkötestejä on yhteensä 27. Testeillä tarkistetaan sekä pelilaudan toimintaa että tekoälyn hakualgoritmin keskeisiä ominaisuuksia.
 
 Testiajon jälkeen tulokset:
 
 ```text
-Testejä: 25
-Hyväksyttyjä: 25
+Testejä: 27
+Hyväksyttyjä: 27
 Hylättyjä: 0
 ```
 

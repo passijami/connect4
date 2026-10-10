@@ -5,6 +5,8 @@ olemassa käytetyllä syvyydellä.
 """
 
 import math
+import time
+import pytest
 from connect4.ai import (
     WIN_SCORE,
     choose_move,
@@ -55,6 +57,31 @@ def test_choose_move_returns_legal_move():
     move = choose_move(board, time_limit_seconds=0.02)
 
     assert move in board.legal_moves()
+
+def test_minimax_stops_on_expired_deadline():
+    board = Board()
+    expired_deadline = time.monotonic() - 1.0
+
+    with pytest.raises(SearchTimeout):
+        minimax(
+            board,
+            4,
+            -math.inf,
+            math.inf,
+            True,
+            {},
+            deadline=expired_deadline,
+        )
+
+
+def test_choose_move_raises_when_board_is_full():
+    board = Board()
+    for column in range(7):
+        for _ in range(6):
+            board.play(column)
+
+    with pytest.raises(ValueError, match="ei ole laillisia siirtoja"):
+        choose_move(board, time_limit_seconds=1.0)
 
 def test_choose_move_without_time_uses_center_first_order():
     board = Board()

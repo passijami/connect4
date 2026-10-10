@@ -1,7 +1,8 @@
 # Connect4
 Tämä on Helsingin yliopiston Tietojenkäsittelytieteen kandiohjelman Algoritmit ja tekoäly -kurssilla suoritettava projekti, jossa luon Connect4 -pelille tekoälyn hyödyntämällä minimax-algoritmia.
 
-## Ohjelman suorittaminen
+## Ohjelman suorittaminen  
+
 Asenna ensin projektin riippuvuudet:
 
 ```bash
@@ -45,7 +46,8 @@ Benchmark suorittaa haut hakusyvyyksillä 1-7, mitataan muun muassa:
 Benchmark muodostaa myös suorituskykykuvaajan dokumentaatiota varten.
 
 
-## Dokumentaatio
+## Dokumentaatio  
+[Käyttöohje](docs/Käyttöohje.md)  
 [Määrittelydokumentti](docs/Määrittelydokumentti.md)  
 [Testausdokumentti](docs/Testausdokumentti.md)  
 [Toteutusdokumentti](docs/Toteutusdokumentti.md)

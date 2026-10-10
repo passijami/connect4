@@ -9,6 +9,7 @@ alfa-beta-karsintojen määrään sekä suoritusaikaan. (Ei yksikkötesti!)
 
 import math
 import time
+import matplotlib.pyplot as plt
 from connect4.ai import minimax, minimax_without_pruning
 from connect4.board import Board
 

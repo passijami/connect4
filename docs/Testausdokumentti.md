@@ -184,9 +184,10 @@ Molemmat algoritmit palauttivat jokaisella testatulla hakusyvyydellä saman peli
 
 Yksikkötestit kattavat tällä hetkellä pelilaudan tärkeimmät operaatiot, heuristisen arvioinnin sekä minimax- ja alfa-beta-haun keskeiset oikeellisuusominaisuudet.
 
-Projektin loppuvaiheessa testausta voi vielä täydentää esimerkiksi:
+Käyttöliittymää ei yksikkötestata, koska se ei kuulu projektin algoritmiseen
+ytimeen. Sen toiminta voidaan tarkistaa manuaalisesti.  
 
-* iteratiivisen syvenemisen aikarajan tarkemmalla testauksella
-* eri siirtojärjestysten suorituskykyvertailulla
-
-Lisäksi suorituskykytestausta täydennetään algoritmin kehittyessä niin, että mahdolliset optimoinnit voidaan verrata aiempaan toteutukseen samoilla pelitilanteilla ja hakusyvyyksillä.
+Heuristiikan testit tarkistavat sen tärkeimmät suunnitellut ominaisuudet, mutta
+eivät kata kaikkia mahdollisia Connect4-asemia. Jatkokehityksessä testejä voisi
+lisätä täydellisen Connect4-ratkaisijan tunnetuista asemista ja erityisesti
+monen samanaikaisen uhan tilanteista.

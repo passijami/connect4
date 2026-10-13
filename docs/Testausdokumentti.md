@@ -18,13 +18,13 @@ Lisää tähän viimeisimmän kattavuusajon tulokset:
 | `tests/test_board.py`   |      100 % |
 | Yhteensä                |      95 % |
 
-Nykyisessä viikon 6 versiossa yksikkötestejä on yhteensä 27. Testeillä tarkistetaan sekä pelilaudan toimintaa että tekoälyn hakualgoritmin keskeisiä ominaisuuksia.
+Nykyisessä viikon 6 versiossa yksikkötestejä on yhteensä 29. Testeillä tarkistetaan sekä pelilaudan toimintaa että tekoälyn hakualgoritmin keskeisiä ominaisuuksia.
 
 Testiajon jälkeen tulokset:
 
 ```text
-Testejä: 27
-Hyväksyttyjä: 27
+Testejä: 29
+Hyväksyttyjä: 29
 Hylättyjä: 0
 ```
 
@@ -69,6 +69,8 @@ Tekoälyn testeissä tarkistan, että:
 - heuristiikka suosii tekoälyn keskisarakkeen hallintaa
 - heuristiikka palkitsee tekoälyn kolmen merkin muodostelmaa
 - heuristiikka rankaisee vastustajan välittömästä kolmen merkin uhasta
+- kun minimax on maksimoivan pelaajan vuorossa, se valitsee vaihtoehdoista sen, jolla on suurin arvo
+- ei valita vain heti parhaalta näyttävää siirtoa, vaan tekoäly huomioi myös vastustajan parhaan mahdollisen vastauksen
 
 Minimax-haun kannalta erityisen tärkeä testi on pelilaudan tilan säilyminen. Hakualgoritmi tekee väliaikaisesti siirtoja `play()`-metodilla ja peruu ne `undo()`-metodilla. Haun jälkeen pelilaudan täytyy olla täsmälleen samassa tilassa kuin ennen hakua.
 

@@ -8,6 +8,7 @@ import math
 import time
 import pytest
 from connect4.ai import (
+    SearchTimeout,
     WIN_SCORE,
     choose_move,
     evaluate,

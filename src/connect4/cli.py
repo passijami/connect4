@@ -53,7 +53,7 @@ def main() -> None:
 
         if board.check_win():
             print_board(board)
-            winner = "Ihminen" if human_turn else "Tekoäly"
+            winner = "Ihminen" if is_human_turn else "Tekoäly"
             print(f"{winner} voitti!")
             break
         if board.is_full():

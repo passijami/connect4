@@ -1,8 +1,9 @@
-"""Tekoäly: minimax (alfa-beta-karsinta) + iteratiivinen syveneminen.
-"""
-
+# Lisätään transpositiotaulu
+'''Transpositiotaulu on sanakirja. Sanakirja lisätään choose_move funktioon.'''
 import math
 import time
+from dataclasses import dataclass
+from typing import Literal
 from connect4.board import (
     Board,
     COLS,
@@ -11,6 +12,16 @@ from connect4.board import (
     PLAYER_TWO,
     ROWS,
 )
+
+@dataclass
+class TTEntry:
+    depth: int
+    value: float
+    best_move: int
+    flag: Literal["EXACT", "LOWERBOUND", "UPPERBOUND"]
+
+"""Tekoäly: minimax (alfa-beta-karsinta) + iteratiivinen syveneminen.
+"""
 
 WIN_SCORE = 1000000
 CENTER_FIRST = tuple(sorted(range(COLS), key=lambda column: abs(column - COLS // 2)))
@@ -27,15 +38,7 @@ class SearchTimeout(Exception):
     """
 
 def choose_move(board: Board, time_limit_seconds: float) -> int:
-    """Valitsee parhaan sarakkeen annetulla aikarajalla.
-
-    Haku syvenee yksi taso kerrallaan. Palautettavaksi hyväksytään aina vain
-    viimeisen kokonaan valmistuneen hakusyvyyden tulos. Jos aikaraja täyttyy
-    kesken syvemmän kierroksen, keskeneräinen tulos hylätään.
-
-    move_order_hint elää vain yhden vuoron ajan. Siihen tallennetaan
-    pelitilanteelle aiemmin parhaaksi arvioitu siirto, ei minimax-arvoa.
-    """
+    """Valitsee parhaan sarakkeen annetulla aikarajalla."""
 
     legal_moves = board.legal_moves()
     if not legal_moves:
@@ -43,6 +46,9 @@ def choose_move(board: Board, time_limit_seconds: float) -> int:
 
     ordered_legal_moves = _ordered_moves(board, {})
     best_move = ordered_legal_moves[0]
+
+    # Transpositiotaulu luodaan kerran koko haun ajaksi.
+    transposition_table: dict[object, TTEntry] = {}
 
     if time_limit_seconds <= 0:
         return best_move
@@ -61,6 +67,7 @@ def choose_move(board: Board, time_limit_seconds: float) -> int:
                 maximizing=True,
                 move_order_hint=move_order_hint,
                 deadline=deadline,
+                transposition_table=transposition_table,
             )
         except SearchTimeout:
             break

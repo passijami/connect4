@@ -111,6 +111,9 @@ def main() -> None:
     plt.savefig("docs/images/benchmark_nodes.png")
     plt.close()
 
+    import os
+    os.startfile("docs/images/benchmark_nodes.png")
+
 
 if __name__ == "__main__":
     main()

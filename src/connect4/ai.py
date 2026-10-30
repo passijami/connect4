@@ -30,8 +30,10 @@ CENTER_FIRST = tuple(sorted(range(COLS), key=lambda column: abs(column - COLS //
 CENTER_WEIGHT = 5
 THREE_WEIGHT = 100
 TWO_WEIGHT = 10
+OPEN_TWO_WEIGHT = 30
 OPPONENT_THREE_WEIGHT = 120
 OPPONENT_TWO_WEIGHT = 10
+OPPONENT_OPEN_TWO_WEIGHT = 35
 
 class SearchTimeout(Exception):
     """Sisäinen poikkeus, aikarajan täyttynyt haku keskeytetään.  
@@ -90,6 +92,7 @@ def minimax(
     move_order_hint: dict | None = None,
     deadline: float | None = None,
     stats: dict[str, int] | None = None,
+    transposition_table: dict | None = None,
 ) -> tuple[float, int]:
     """Minimax alfa-beta-karsinnalla, yksi kiinteä syvyys.
 
@@ -119,14 +122,48 @@ def minimax(
 
     if move_order_hint is None:
         move_order_hint = {}
+
+    if transposition_table is None:
+        transposition_table = {}
+
     if depth == 0 or board.is_full():
         return evaluate(board), -1
+
+    # Tallennetaan alkuperäiset alfa- ja beta-arvot.
+    original_alpha = alpha
+    original_beta = beta
 
     moves = _ordered_moves(board, move_order_hint)
     if not moves:
         return 0.0, -1
 
-    position_key = board.position_key()
+    # Välimuistin lukeminen
+    position_key = (board.position_key(), maximizing)
+
+    # Tarkistetaan, löytyykö pelitila transpositiotaulusta.
+    entry = transposition_table.get(position_key)
+
+    if entry is not None:
+        if stats is not None:
+            stats["tt_hits"] = stats.get("tt_hits", 0) + 1
+
+        # Käytetään aiemmin löydettyä hyvää siirtoa myös siirtojen järjestämisessä.
+        move_order_hint[board.position_key()] = entry.best_move
+
+        # Käytetään tallennettua arvoa vain, jos se on laskettu vähintään yhtä syvälle.
+        if entry.depth >= depth:
+
+            if entry.flag == "EXACT":
+                return entry.value, entry.best_move
+
+            elif entry.flag == "LOWERBOUND":
+                alpha = max(alpha, entry.value)
+
+            elif entry.flag == "UPPERBOUND":
+                beta = min(beta, entry.value)
+
+            if alpha >= beta:
+                return entry.value, entry.best_move
 
     if maximizing:
         best_value = -math.inf
@@ -150,6 +187,7 @@ def minimax(
                         move_order_hint,
                         deadline=deadline,
                         stats=stats,
+                        transposition_table=transposition_table,
                     )
             finally:
                 board.undo(column)
@@ -186,6 +224,7 @@ def minimax(
                         move_order_hint,
                         deadline=deadline,
                         stats=stats,
+                        transposition_table=transposition_table,
                     )
             finally:
                 board.undo(column)
@@ -200,7 +239,28 @@ def minimax(
                     stats["cutoffs"] = stats.get("cutoffs", 0) + 1
                 break
 
-    move_order_hint[position_key] = best_move
+    # Määritetään, onko tulos tarkka vai alfa-beta-karsinnan raja-arvo.
+    if best_value <= original_alpha:
+        flag = "UPPERBOUND"
+    elif best_value >= original_beta:
+        flag = "LOWERBOUND"
+    else:
+        flag = "EXACT"
+
+    # Tallennetaan tulos, jos se on vähintään yhtä syvä kuin aiemmin tallennettu tulos.
+    old_entry = transposition_table.get(position_key)
+
+    if old_entry is None or depth >= old_entry.depth:
+        transposition_table[position_key] = TTEntry(
+            depth=depth,
+            value=best_value,
+            best_move=best_move,
+            flag=flag,
+        )
+
+    # Tallennetaan myös paras siirto siirtojen järjestämistä varten.
+    move_order_hint[board.position_key()] = best_move
+
     return best_value, best_move
 
 def minimax_without_pruning(
@@ -318,24 +378,36 @@ def evaluate(board: Board) -> float:
 
 def _score_window(window: list[int]) -> int:
     """Pisteyttää yhden neljän ruudun ikkunan."""
+
     ai_count = window.count(PLAYER_TWO)
     opponent_count = window.count(PLAYER_ONE)
     empty_count = window.count(EMPTY)
 
     if ai_count == 4:
         return WIN_SCORE
+
     if opponent_count == 4:
         return -WIN_SCORE
 
     score = 0
 
+    # Tekoälyn muodostelmat
     if ai_count == 3 and empty_count == 1:
         score += THREE_WEIGHT
+
+    elif window == [EMPTY, PLAYER_TWO, PLAYER_TWO, EMPTY]:
+        score += OPEN_TWO_WEIGHT
+
     elif ai_count == 2 and empty_count == 2:
         score += TWO_WEIGHT
 
+    # Vastustajan muodostelmat
     if opponent_count == 3 and empty_count == 1:
         score -= OPPONENT_THREE_WEIGHT
+
+    elif window == [EMPTY, PLAYER_ONE, PLAYER_ONE, EMPTY]:
+        score -= OPPONENT_OPEN_TWO_WEIGHT
+
     elif opponent_count == 2 and empty_count == 2:
         score -= OPPONENT_TWO_WEIGHT
 

@@ -1,5 +1,3 @@
-# Lisätään transpositiotaulu
-'''Transpositiotaulu on sanakirja. Sanakirja lisätään choose_move funktioon.'''
 import math
 import time
 from dataclasses import dataclass
@@ -13,6 +11,8 @@ from connect4.board import (
     ROWS,
 )
 
+# Lisätään transpositiotaulu
+'''Transpositiotaulu on sanakirja. Sanakirja lisätään choose_move funktioon.'''
 @dataclass
 class TTEntry:
     depth: int

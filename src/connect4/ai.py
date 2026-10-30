@@ -93,6 +93,7 @@ def minimax(
     deadline: float | None = None,
     stats: dict[str, int] | None = None,
     transposition_table: dict | None = None,
+    use_transposition_table: bool = True,
 ) -> tuple[float, int]:
     """Minimax alfa-beta-karsinnalla, yksi kiinteä syvyys.
 
@@ -123,8 +124,11 @@ def minimax(
     if move_order_hint is None:
         move_order_hint = {}
 
-    if transposition_table is None:
-        transposition_table = {}
+    if use_transposition_table:
+        if transposition_table is None:
+            transposition_table = {}
+    else:
+        transposition_table = None
 
     if depth == 0 or board.is_full():
         return evaluate(board), -1
@@ -139,20 +143,18 @@ def minimax(
 
     # Välimuistin lukeminen
     position_key = (board.position_key(), maximizing)
+    entry = None
 
-    # Tarkistetaan, löytyykö pelitila transpositiotaulusta.
-    entry = transposition_table.get(position_key)
+    if transposition_table is not None:
+        entry = transposition_table.get(position_key)
 
     if entry is not None:
         if stats is not None:
             stats["tt_hits"] = stats.get("tt_hits", 0) + 1
 
-        # Käytetään aiemmin löydettyä hyvää siirtoa myös siirtojen järjestämisessä.
         move_order_hint[board.position_key()] = entry.best_move
 
-        # Käytetään tallennettua arvoa vain, jos se on laskettu vähintään yhtä syvälle.
         if entry.depth >= depth:
-
             if entry.flag == "EXACT":
                 return entry.value, entry.best_move
 
@@ -188,6 +190,7 @@ def minimax(
                         deadline=deadline,
                         stats=stats,
                         transposition_table=transposition_table,
+                        use_transposition_table=use_transposition_table,
                     )
             finally:
                 board.undo(column)
@@ -225,6 +228,7 @@ def minimax(
                         deadline=deadline,
                         stats=stats,
                         transposition_table=transposition_table,
+                        use_transposition_table=use_transposition_table,
                     )
             finally:
                 board.undo(column)
@@ -248,15 +252,16 @@ def minimax(
         flag = "EXACT"
 
     # Tallennetaan tulos, jos se on vähintään yhtä syvä kuin aiemmin tallennettu tulos.
-    old_entry = transposition_table.get(position_key)
+    if transposition_table is not None:
+        old_entry = transposition_table.get(position_key)
 
-    if old_entry is None or depth >= old_entry.depth:
-        transposition_table[position_key] = TTEntry(
-            depth=depth,
-            value=best_value,
-            best_move=best_move,
-            flag=flag,
-        )
+        if old_entry is None or depth >= old_entry.depth:
+            transposition_table[position_key] = TTEntry(
+                depth=depth,
+                value=best_value,
+                best_move=best_move,
+                flag=flag,
+            )
 
     # Tallennetaan myös paras siirto siirtojen järjestämistä varten.
     move_order_hint[board.position_key()] = best_move

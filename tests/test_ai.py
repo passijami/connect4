@@ -8,14 +8,17 @@ import math
 import time
 import pytest
 from connect4.ai import (
+    OPEN_TWO_WEIGHT,
+    OPPONENT_OPEN_TWO_WEIGHT,
     SearchTimeout,
     WIN_SCORE,
+    _score_window,
     choose_move,
     evaluate,
     minimax,
     minimax_without_pruning,
 )
-from connect4.board import Board
+from connect4.board import EMPTY, PLAYER_ONE, PLAYER_TWO, Board
 
 def play_moves(board: Board, moves: list[int]) -> None:
     """Testilauta annetusta siirtosarjasta"""
@@ -199,30 +202,22 @@ def test_evaluate_penalizes_opponents_three_in_a_row():
 
     assert evaluate(dangerous_board) < evaluate(safer_board)
 
-# minimax
-def test_minimax_maximizing_selects_highest_child_value(monkeypatch):
-    """Maksimoiva taso valitsee lapsista suurimman heuristisen arvon.
-    Testaa, että kun minimax on maksimoivan pelaajan vuorossa, se valitsee vaihtoehdoista sen,
-    jolla on suurin arvo. Esim. jos siirtojen arvot ovat 10, 20, 30 ja 70,
-    minimaxin pitää valita arvo 70."""
+# Minimax
+
+def test_minimax_selects_best_move_using_real_heuristic():
+    """Minimax valitsee parhaan siirron oikean heuristiikan perusteella."""
+
     board = Board()
-    board.play(6)  # Pelaaja 2 seuraavaksi vuorossa
+    play_moves(board, [3])
 
-    values_by_column = {
-        0: 10.0,
-        1: 20.0,
-        2: 30.0,
-        3: 70.0,
-        4: 40.0,
-        5: 50.0,
-        6: 60.0,
-    }
+    scores = {}
 
-    def fake_evaluate(test_board: Board) -> float:
-        assert test_board.last_move is not None
-        return values_by_column[test_board.last_move[1]]
+    for column in board.legal_moves():
+        board.play(column)
+        scores[column] = evaluate(board)
+        board.undo(column)
 
-    monkeypatch.setattr("connect4.ai.evaluate", fake_evaluate)
+    expected_value = max(scores.values())
 
     value, move = minimax(
         board,
@@ -233,42 +228,31 @@ def test_minimax_maximizing_selects_highest_child_value(monkeypatch):
         {},
     )
 
-    assert move == 3
-    assert value == 70.0
+    assert value == expected_value
+    assert scores[move] == expected_value
 
-def test_minimax_accounts_for_opponents_best_response(monkeypatch):
-    """Minimax valitsee siirron parhaan vastustajan vastauksen huomioiden.
-    Jos joku siirto näyttää ensin hyvältä mutta vastustaja pystyy vastaamaan siihen niin,
-    että lopputulos on huono, minimaxin pitää valita toinen, turvallisempi siirto."""
+def test_minimax_considers_opponents_best_response():
+    """Minimax huomioi vastustajan parhaat vastaukset oikeassa pelitilanteessa."""
+
     board = Board()
-    board.play(6)  # Pelaaja 2 (maksimoiva) on seuraavana vuorossa.
+    play_moves(board, [3, 2, 3, 4, 2, 4])
 
-    def fake_evaluate(test_board: Board) -> float:
-        history = test_board._move_history
-        root_move = history[-2][1]
-        opponent_response = history[-1][1]
+    maximizing = board.current_player == 2
 
-        # Sarake 0 näyttää yleensä erittäin hyvältä,
-        # mutta vastustajalla on vastaus, joka tekee siitä huonon.
-        if root_move == 0:
-            return -100.0 if opponent_response == 6 else 100.0
-
-        # Sarake 1 antaa varmasti arvon +10 riippumatta vastauksesta.
-        if root_move == 1:
-            return 10.0
-
-        return -50.0
-
-    monkeypatch.setattr("connect4.ai.evaluate", fake_evaluate)
-
-    value, move = minimax(
+    alpha_beta_value, alpha_beta_move = minimax(
         board,
-        2,
+        3,
         -math.inf,
         math.inf,
-        True,
+        maximizing,
         {},
     )
 
-    assert move == 1
-    assert value == 10.0
+    plain_value, plain_move = minimax_without_pruning(
+        board,
+        3,
+        maximizing,
+    )
+
+    assert alpha_beta_value == plain_value
+    assert alpha_beta_move == plain_move
